@@ -1,38 +1,55 @@
 # include <iostream>
+# include <cstring>
 using namespace std;
 
-class SoBase
+class Person
 {
 private:
-    int baseNum;
+    char * name;
 public:
-    SoBase(int n) : baseNum(n)
+    Person(char * myname)
     {
-        cout<<"SoBase() : "<<baseNum<<endl;
-    }~SoBase()
+        name=new char[strlen(myname)+1];
+        strcpy(name, myname);
+    }
+    ~Person()
     {
-        cout<<"~SoBase() : "<<baseNum<<endl;
+        delete []name;
+    }
+    void WhatYourName() const
+    {
+        cout<<"My name is "<<name<<endl;
     }
 };
 
-class SoDerived : public SoBase
+class UnivStudent : public Person
 {
 private:
-    int derivNum;
+    char * major;
 public:
-    SoDerived(int n) : SoBase(n), derivNum(n)
+    UnivStudent(char * myname, char * mymajor)
+    : Person(myname)
     {
-        cout<<"SoDerived() : "<<derivNum<<endl;
+        major=new char[strlen(major)+1];
+        strcpy(major, mymajor);
     }
-    ~SoDerived()
+    ~UnivStudent()
     {
-        cout<<"~SoDerived() : "<<derivNum<<endl;
+        delete []major;
+    }
+    void WhoAreYou() const
+    {
+        WhatYourName();
+        cout<<"My major is "<<major<<endl<<endl;
     }
 };
 
 int main(void)
 {
-    SoDerived dr1(15);
-    SoDerived dr2(27);
+    UnivStudent st1("Kim", "Mathematics");
+    st1.WhoAreYou();
+    UnivStudent st2("Hong", "Physics");
+    st2.WhoAreYou();
     return 0;
 }
+
