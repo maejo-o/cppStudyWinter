@@ -15,10 +15,8 @@ public:
     {
         cout<<"name : "<<name<<endl;
     }
-    virtual int GetPay() const
-    { return 0; }
-    virtual void ShowSalaryInfo() const
-    { }
+    virtual int GetPay() const=0;
+    virtual void ShowSalaryInfo() const=0;
 };
 
 class PermanentWorker : public Employee
@@ -87,7 +85,35 @@ public:
         cout<<"salary : "<<GetPay()<<endl<<endl;
     }
 };
+namespace RISK_LEVEL
+{
+    enum {RISK_A=30, RISK_B=20, RISK_C=10};
+}
 
+class ForeignSalesWorker : public SalesWorker
+{
+private:
+    const int riskLevel;
+public:
+    ForeignSalesWorker(char *name, int money, double ratio, int risk)
+        : SalesWorker(name, money, ratio), riskLevel(risk)
+    { }
+    int GetRiskPay() const
+    {
+        return (int)(SalesWorker::GetPay())*(riskLevel/100.0);
+    }
+    int GetPay() const
+    {
+        return SalesWorker::GetPay() + GetRiskPay();
+    }
+    void ShowSalaryInfo() const
+    {
+        ShowYourName();
+        cout<<"salary: "<<SalesWorker::GetPay()<<endl;
+        cout<<"risk pay : "<<GetRiskPay()<<endl;
+        cout<<"sum : "<<GetPay()<<endl<<endl;
+    }
+};
 class EmployeeHandler
 {
 private:
@@ -126,6 +152,19 @@ int main(void)
     // 직원 관리를 목적으로 설계된 컨트롤 클래스의 객체 생성
     EmployeeHandler handler;
     
+    // 해외 영업직 등록
+    ForeignSalesWorker * fseller1=new ForeignSalesWorker("Hong", 1000, 0.1, RISK_LEVEL::RISK_A);
+    fseller1->AddSalesResult(7000);
+    handler.AddEmployee(fseller1);
+    
+    ForeignSalesWorker * fseller2=new ForeignSalesWorker("Yoon", 1000, 0.1, RISK_LEVEL::RISK_B);
+    fseller1->AddSalesResult(7000);
+    handler.AddEmployee(fseller2);
+    
+    ForeignSalesWorker * fseller3=new ForeignSalesWorker("Lee", 1000, 0.1, RISK_LEVEL::RISK_C);
+    fseller1->AddSalesResult(7000);
+    handler.AddEmployee(fseller3);
+    /*
     // 정규직 등록
     handler.AddEmployee(new PermanentWorker("KIM", 1000));
     handler.AddEmployee(new PermanentWorker("LEE", 1500));
@@ -139,7 +178,7 @@ int main(void)
     SalesWorker * seller=new SalesWorker("Hong", 1000, 0.1);
     seller->AddSalesResult(7000);
     handler.AddEmployee(seller);
-        
+    */
     // 이번 달에 지급해야 할 급여의 정보
     handler.ShowAllSalaryInfo();
     
